@@ -12,16 +12,30 @@ async function fetchUserData(id) {
 
 // Optimize this function:
 async function processUsers(users) {
-  let results = [];
+  let results = new Map();
+  
   for (let i = 0; i < users.length; i++) {
     let user = users[i];
+    
+    // Keep the existing if block that looks up the email address if it is null
     if (!user.email) {
       let enriched = await fetchUserData(user.id);
       user.email = enriched.email;
     }
-    results.push(user);
+    
+    // Check if the email address exists in the results map using has()
+    if (results.has(user.email)) {
+      // If the email address already exists as a key in the map, continue to the next entry
+      continue;
+    }
+    
+    // If the email address does not exist as a key in the map, add an entry
+    // with the current email address as the key and the current entry of users as the value
+    results.set(user.email, user);
   }
-  return results;
+  
+  // After the loop finishes, return the values of the map as an array
+  return Array.from(results.values());
 }
 
 module.exports = processUsers;
