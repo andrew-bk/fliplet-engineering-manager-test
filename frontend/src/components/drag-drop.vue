@@ -13,6 +13,7 @@
 
 <script>
 export default {
+  name: "DragDrop",
   data() {
     return { items: [] };
   },
